@@ -37,9 +37,9 @@ def get_menu(target_date):
             return (
                 f"📌 {label} ({t} - {gun}) Menü:\n"
                 f"🍲 Çorba: {corba}\n"
-                f"🍽️ Ana: {ana}\n"
+                f"🍽️ Yemek: {ana}\n"
                 f"🥗 Yardımcı: {yard}\n"
-                f"🍮 Tatlı/İçecek: {tatli}\n"
+                f"🍮 Tatlı/Meyve: {tatli}\n"
                 f"✅ Ekstra: {ekstra}"
             )
 
