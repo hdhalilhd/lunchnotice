@@ -1,0 +1,31 @@
+name: LunchNotice
+
+on:
+  schedule:
+    - cron: "0 6 * * *"   # 06:00 UTC = 09:00 Türkiye
+  workflow_dispatch:     # Manuel çalıştırma butonu
+
+jobs:
+  send_menu:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run LunchNotice
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          EXCEL_PATH: "Subat_2026_Yemek_Listesi.xlsx"
+          SHEET_NAME: "Şubat 2026 Menü"
+          SEND_TOMORROW: "true"
+        run: python menu_to_telegram.py
