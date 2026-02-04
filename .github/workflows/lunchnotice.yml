@@ -2,8 +2,9 @@ name: LunchNotice
 
 on:
   schedule:
-    - - cron: "00 8 * * *"  # UTC 06:51 = TR 09:51
+    - cron: "0 8 * * *"   # 06:00 UTC = 09:00 Türkiye
   workflow_dispatch:
+
 jobs:
   send_menu:
     runs-on: ubuntu-latest
@@ -24,4 +25,7 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          EXCEL_PATH: "Subat_2026_Yemek_Listesi.xlsx"
+          SHEET_NAME: "Şubat 2026 Menü"
+          SEND_TOMORROW: "false"
         run: python menu_to_telegram.py
