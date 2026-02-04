@@ -2,9 +2,8 @@ name: LunchNotice
 
 on:
   schedule:
-    - cron: "51 6 * * *"   # 06:00 UTC = 09:00 TR
+    - cron: "*/2 * * * *"   # her 5 dakikada bir (UTC)
   workflow_dispatch:
-
 jobs:
   send_menu:
     runs-on: ubuntu-latest
