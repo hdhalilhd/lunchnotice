@@ -8,7 +8,7 @@ CHAT_ID = int(os.getenv("TELEGRAM_CHAT_ID", "1677402217"))
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 EXCEL_PATH = os.getenv("EXCEL_PATH", "Subat_2026_Yemek_Listesi.xlsx")
 SHEET_NAME = os.getenv("SHEET_NAME", "Şubat 2026 Menü")
-SEND_TOMORROW = os.getenv("SEND_TOMORROW", "true").lower() == "true"
+SEND_TOMORROW = os.getenv("SEND_TOMORROW", "false").lower() == "true"
 # =================
 
 MONTHS = {
