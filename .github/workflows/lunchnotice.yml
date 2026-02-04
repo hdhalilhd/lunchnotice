@@ -2,7 +2,7 @@ name: LunchNotice
 
 on:
   schedule:
-    - cron: "0 9 * * *"   # 06:00 UTC = 09:00 Türkiye
+    - cron: "10 9 * * *"   # 06:00 UTC = 09:00 Türkiye
   workflow_dispatch:
 
 jobs:
