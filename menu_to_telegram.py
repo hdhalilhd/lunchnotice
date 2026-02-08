@@ -4,7 +4,9 @@ import requests
 from openpyxl import load_workbook
 
 # === AYARLAR ===
-CHAT_ID = int(os.getenv("TELEGRAM_CHAT_ID", "1677402217"))
+CHAT_ID = int(os.getenv("TELEGRAM_CHAT_ID", "1677402217"))  # mevcut hedef (özel/kişisel)
+GROUP_CHAT_ID = -1003758241042  # ASKO YEMEK MENÜ
+
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 EXCEL_PATH = os.getenv("EXCEL_PATH", "Subat_2026_Yemek_Listesi.xlsx")
 SHEET_NAME = os.getenv("SHEET_NAME", "Şubat 2026 Menü")
@@ -45,14 +47,25 @@ def get_menu(target_date):
 
     return f"❗ Menü bulunamadı: {target_date}"
 
-def send_telegram(msg):
+def send_telegram(msg, chat_id):
     if not TOKEN:
         raise RuntimeError("TELEGRAM_BOT_TOKEN boş. GitHub Secrets'a ekle.")
     url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
-    r = requests.post(url, json={"chat_id": CHAT_ID, "text": msg}, timeout=20)
+    r = requests.post(url, json={"chat_id": chat_id, "text": msg}, timeout=20)
     r.raise_for_status()
 
 if __name__ == "__main__":
     today = dt.date.today()
     target = today + dt.timedelta(days=1) if SEND_TOMORROW else today
-    send_telegram(get_menu(target))
+
+    # Haftasonu: Cumartesi=5, Pazar=6 -> mesaj yok
+    if target.weekday() >= 5:
+        print("Haftasonu -> mesaj gönderilmedi.")
+        raise SystemExit(0)
+
+    msg = get_menu(target)
+
+    # Hem kişiye hem gruba gönder
+    send_telegram(msg, CHAT_ID)
+    send_telegram(msg, GROUP_CHAT_ID)
+
