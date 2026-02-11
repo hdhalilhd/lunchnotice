@@ -64,9 +64,7 @@ if __name__ == "__main__":
         raise SystemExit(0)
 
     msg = get_menu(target)
-    send_telegram("✅ Test: Bot admin ve mesaj atabiliyor", -1003758241042)
-
-
+   
     # Hem kişiye hem gruba gönder
     send_telegram(msg, CHAT_ID)
     send_telegram(msg, GROUP_CHAT_ID)
