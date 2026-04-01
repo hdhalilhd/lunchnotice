@@ -31,8 +31,14 @@ def get_menu(target_date):
     wb = load_workbook(EXCEL_PATH, data_only=True)
     ws = wb[SHEET_NAME]
 
-    for row in ws.iter_rows(min_row=2, values_only=True):
-        t, gun, corba, ana, yard, tatli, ekstra = row
+for row in ws.iter_rows(min_row=2, values_only=True):
+        # Gelen satırı listeye çevirip ilk 7 elemanını al (fazla varsa kes)
+        veri = list(row)[:7]
+        
+        # Eğer satırda 7'den az eleman varsa (senin aldığın hata durumu), eksikleri None ile tamamla
+        veri += [None] * (7 - len(veri))
+        
+        t, gun, corba, ana, yard, tatli, ekstra = veri
         d = parse_tr_date(t)
         if d == target_date:
             label = "Yarın" if SEND_TOMORROW else "Bugün"
