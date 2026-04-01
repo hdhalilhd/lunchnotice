@@ -1,11 +1,103 @@
-def get_menu():
-    # Some code before the loop
-    
-    for item in menu_items:  # Line 34
-        # Line 35
-        # Some nested code here
-        for sub_item in item.sub_items:  # Line 37
-            # Line 38
-            # Another nested code
+import os
+import datetime as dt
+import requests
+from openpyxl import load_workbook
 
-    # Code after the loop
+# === AYARLAR ===
+CHAT_ID = int(os.getenv("TELEGRAM_CHAT_ID", "1677402217"))  # Sana gelecek özel mesaj
+GROUP_CHAT_ID = -1003758241042  # ASKO YEMEK MENÜ grubuna gidecek mesaj
+
+TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
+EXCEL_PATH = os.getenv("EXCEL_PATH", "Nisan_2026_Tam_Menu.xlsx") # .xlsx uzantısı eklendi
+SHEET_NAME = os.getenv("SHEET_NAME", "Nisan 2026 Menü")
+SEND_TOMORROW = os.getenv("SEND_TOMORROW", "false").lower() == "true"
+# =================
+
+MONTHS = {
+    "Ocak": 1, "Şubat": 2, "Mart": 3, "Nisan": 4, "Mayıs": 5, "Haziran": 6,
+    "Temmuz": 7, "Ağustos": 8, "Eylül": 9, "Ekim": 10, "Kasım": 11, "Aralık": 12
+}
+
+def parse_tr_date(s):
+    if not s:
+        return None
+    parts = str(s).strip().split()
+    if len(parts) != 3:
+        return None
+    try:
+        return dt.date(int(parts[2]), MONTHS.get(parts[1]), int(parts[0]))
+    except:
+        return None
+
+def get_menu(target_date):
+    try:
+        wb = load_workbook(EXCEL_PATH, data_only=True)
+        ws = wb[SHEET_NAME]
+    except Exception as e:
+        return f"❗ Excel dosyası veya sayfası bulunamadı: {e}"
+
+    for row in ws.iter_rows(min_row=2, values_only=True):
+        # Satır tamamen boşsa atla
+        if not any(row):
+            continue
+
+        # --- KRİTİK SÜTUN DÜZELTMESİ ---
+        # Gelen satırı listeye çevirip ilk 7 elemanını al
+        veri = list(row)[:7]
+        
+        # Eğer satırda 7'den az eleman varsa (Excel'de sütun silindiyse), eksikleri None ile tamamla
+        veri += [None] * (7 - len(veri))
+        
+        t, gun, corba, ana, yard, tatli, ekstra = veri
+
+        d = parse_tr_date(t)
+        if d == target_date:
+            label = "Yarın" if SEND_TOMORROW else "Bugün"
+            
+            # Excel'de ekstra sütunu boş bırakıldıysa Telegram'da "None" yazmaması için "-" koyuyoruz
+            ekstra_yazi = ekstra if ekstra else "-"
+            
+            return (
+                f"📌 {label} ({t} - {gun}) Menü:\n"
+                f"🍲 Çorba: {corba}\n"
+                f"🍽️ Yemek: {ana}\n"
+                f"🥗 Yardımcı: {yard}\n"
+                f"🍮 Tatlı/Meyve: {tatli}\n"
+                f"✅ Ekstra: {ekstra_yazi}"
+            )
+
+    return f"❗ Menü bulunamadı: {target_date.strftime('%d.%m.%Y')}"
+
+def send_telegram(msg, chat_id):
+    if not TOKEN:
+        print("HATA: TELEGRAM_BOT_TOKEN bulunamadı. GitHub Secrets'ı kontrol et.")
+        return
+        
+    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+    try:
+        r = requests.post(url, json={"chat_id": chat_id, "text": msg}, timeout=20)
+        r.raise_for_status()
+        print(f"Mesaj başarıyla gönderildi (ID: {chat_id})")
+    except Exception as e:
+        print(f"Mesaj gönderilirken hata oluştu (ID: {chat_id}): {e}")
+
+if __name__ == "__main__":
+    today = dt.date.today()
+    target = today + dt.timedelta(days=1) if SEND_TOMORROW else today
+
+    # Haftasonu: Cumartesi=5, Pazar=6 -> mesaj yok
+    if target.weekday() >= 5:
+        print("Haftasonu -> Mesaj gönderilmedi.")
+        raise SystemExit(0)
+
+    msg = get_menu(target)
+    
+    # 1. Sana (Admin) her durumda mesaj gitsin (hata olsa bile haberin olsun)
+    send_telegram(msg, CHAT_ID)
+    
+    # 2. Gruba sadece menü BAŞARIYLA bulunduysa mesaj gitsin. 
+    # (Resmi tatillerde Excel'de o gün yoksa gruba "Menü bulunamadı" diye boşuna mesaj atmaz)
+    if "❗" not in msg:
+        send_telegram(msg, GROUP_CHAT_ID)
+    else:
+        print("Hata veya tatil günü olduğu için gruba mesaj atılmadı.")
