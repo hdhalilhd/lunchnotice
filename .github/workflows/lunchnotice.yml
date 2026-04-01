@@ -3,11 +3,7 @@ name: LunchNotice
 on:
   schedule:
     - cron: "08 4 * * *"    # 04:08 Türkiye (UTC 04:05)
-    - cron: "08 10 * * *"    # 04:08 Türkiye (UTC 04:05)
-    - cron: "08 11 * * *"    # 04:08 Türkiye (UTC 04:05)
-    - cron: "08 12 * * *"    # 04:08 Türkiye (UTC 04:05)
-    - cron: "30 12 * * *"    # 04:08 Türkiye (UTC 04:05)
-    workflow_dispatch:
+workflow_dispatch:
 
 jobs:
   send_menu:
