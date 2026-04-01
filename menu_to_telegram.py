@@ -8,7 +8,7 @@ CHAT_ID = int(os.getenv("TELEGRAM_CHAT_ID", "1677402217"))  # mevcut hedef (öze
 GROUP_CHAT_ID = -1003758241042  # ASKO YEMEK MENÜ
 
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
-EXCEL_PATH = os.getenv("EXCEL_PATH", "Nisan_2026_Tam_Menu")
+EXCEL_PATH = os.getenv("EXCEL_PATH", "Nisan_2026_Tam_Menu.xlsx")
 SHEET_NAME = os.getenv("SHEET_NAME", "Nisan 2026 Menü")
 SEND_TOMORROW = os.getenv("SEND_TOMORROW", "false").lower() == "true"
 # =================
