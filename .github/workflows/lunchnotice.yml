@@ -3,7 +3,11 @@ name: LunchNotice
 on:
   schedule:
     - cron: "08 4 * * *"    # 04:08 Türkiye (UTC 04:05)
-  workflow_dispatch:
+    - cron: "08 10 * * *"    # 04:08 Türkiye (UTC 04:05)
+    - cron: "08 11 * * *"    # 04:08 Türkiye (UTC 04:05)
+    - cron: "08 12 * * *"    # 04:08 Türkiye (UTC 04:05)
+    - cron: "30 12 * * *"    # 04:08 Türkiye (UTC 04:05)
+    workflow_dispatch:
 
 jobs:
   send_menu:
@@ -25,7 +29,7 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          EXCEL_PATH: "Subat_2026_Yemek_Listesi.xlsx"
-          SHEET_NAME: "Şubat 2026 Menü"
+          EXCEL_PATH: "Nisan_2026_Tam_Menu.xlsx"
+          SHEET_NAME: "Nisan 2026 Menü"
           SEND_TOMORROW: "false"
         run: python menu_to_telegram.py
