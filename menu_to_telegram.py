@@ -30,16 +30,16 @@ def parse_tr_date(s):
         return None
 
 def get_menu(target_date):
-try:
-    wb = load_workbook(EXCEL_PATH, data_only=True)
+    try:
+        wb = load_workbook(EXCEL_PATH, data_only=True)
 
-    if SHEET_NAME:
-        ws = wb[SHEET_NAME]
-    else:
-        ws = wb.active
+        if SHEET_NAME:
+            ws = wb[SHEET_NAME]
+        else:
+            ws = wb.active
 
-except Exception as e:
-    return f"❗ Excel dosyası veya sayfası bulunamadı: {e}"
+    except Exception as e:
+        return f"❗ Excel dosyası veya sayfası bulunamadı: {e}"
 
     for row in ws.iter_rows(min_row=2, values_only=True):
         # Satır tamamen boşsa atla
@@ -49,19 +49,19 @@ except Exception as e:
         # --- KRİTİK SÜTUN DÜZELTMESİ ---
         # Gelen satırı listeye çevirip ilk 7 elemanını al
         veri = list(row)[:7]
-        
-        # Eğer satırda 7'den az eleman varsa (Excel'de sütun silindiyse), eksikleri None ile tamamla
+
+        # Eğer satırda 7'den az eleman varsa, eksikleri None ile tamamla
         veri += [None] * (7 - len(veri))
-        
+
         t, gun, corba, ana, yard, tatli, ekstra = veri
 
         d = parse_tr_date(t)
         if d == target_date:
             label = "Yarın" if SEND_TOMORROW else "Bugün"
-            
+
             # Excel'de ekstra sütunu boş bırakıldıysa Telegram'da "None" yazmaması için "-" koyuyoruz
             ekstra_yazi = ekstra if ekstra else "-"
-            
+
             return (
                 f"📌 {label} ({t} - {gun}) Menü:\n"
                 f"🍲 Çorba: {corba}\n"
