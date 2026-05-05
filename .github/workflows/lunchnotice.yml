@@ -22,10 +22,10 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run LunchNotice
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          EXCEL_PATH: "Nisan_2026_Tam_Menu.xlsx"
-          SHEET_NAME: "Nisan 2026 Menü"
-          SEND_TOMORROW: "false"
+env:
+  TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+  TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+  EXCEL_PATH: "Yemek_Listesi.xlsx"
+  SHEET_NAME: ""
+  SEND_TOMORROW: "false"
         run: python menu_to_telegram.py
