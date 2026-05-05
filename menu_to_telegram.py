@@ -8,8 +8,8 @@ CHAT_ID = int(os.getenv("TELEGRAM_CHAT_ID", "1677402217"))  # Sana gelecek özel
 GROUP_CHAT_ID = -1003758241042  # ASKO YEMEK MENÜ grubuna gidecek mesaj
 
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
-EXCEL_PATH = os.getenv("EXCEL_PATH", "Nisan_2026_Tam_Menu.xlsx") # .xlsx uzantısı eklendi
-SHEET_NAME = os.getenv("SHEET_NAME", "Nisan 2026 Menü")
+EXCEL_PATH = os.getenv("EXCEL_PATH", "Yemek_Listesi.xlsx")
+SHEET_NAME = os.getenv("SHEET_NAME", "")
 SEND_TOMORROW = os.getenv("SEND_TOMORROW", "false").lower() == "true"
 # =================
 
@@ -30,11 +30,16 @@ def parse_tr_date(s):
         return None
 
 def get_menu(target_date):
-    try:
-        wb = load_workbook(EXCEL_PATH, data_only=True)
+try:
+    wb = load_workbook(EXCEL_PATH, data_only=True)
+
+    if SHEET_NAME:
         ws = wb[SHEET_NAME]
-    except Exception as e:
-        return f"❗ Excel dosyası veya sayfası bulunamadı: {e}"
+    else:
+        ws = wb.active
+
+except Exception as e:
+    return f"❗ Excel dosyası veya sayfası bulunamadı: {e}"
 
     for row in ws.iter_rows(min_row=2, values_only=True):
         # Satır tamamen boşsa atla
