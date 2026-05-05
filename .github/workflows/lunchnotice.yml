@@ -2,7 +2,7 @@ name: LunchNotice
 
 on:
   schedule:
-    - cron: "08 4 * * *"    # TSİ 08:08 (UTC 05:08)
+    - cron: "08 4 * * *"    # TSİ 07:08
   workflow_dispatch:
 
 jobs:
@@ -22,10 +22,10 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run LunchNotice
-env:
-  TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-  TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-  EXCEL_PATH: "Yemek_Listesi.xlsx"
-  SHEET_NAME: ""
-  SEND_TOMORROW: "false"
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          EXCEL_PATH: "Yemek_Listesi.xlsx"
+          SHEET_NAME: ""
+          SEND_TOMORROW: "false"
         run: python menu_to_telegram.py
