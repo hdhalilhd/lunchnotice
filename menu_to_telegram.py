@@ -5,7 +5,7 @@ from openpyxl import load_workbook
 
 # === AYARLAR ===
 CHAT_ID = int(os.getenv("TELEGRAM_CHAT_ID", "1677402217"))  # Sana gelecek özel mesaj
-# GROUP_CHAT_ID = -1003758241042  # ASKO YEMEK MENÜ grubuna gidecek mesaj
+GROUP_CHAT_ID = -1003758241042  # ASKO YEMEK MENÜ grubuna gidecek mesaj
 
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 EXCEL_PATH = os.getenv("EXCEL_PATH", "Yemek_Listesi.xlsx")
