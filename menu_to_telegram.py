@@ -47,28 +47,24 @@ def get_menu(target_date):
             continue
 
         # --- KRİTİK SÜTUN DÜZELTMESİ ---
-        # Gelen satırı listeye çevirip ilk 7 elemanını al
-        veri = list(row)[:7]
+        # Gelen satırı listeye çevirip ilk 6 elemanını al (Ekstra çıkarıldı)
+        veri = list(row)[:6]
 
-        # Eğer satırda 7'den az eleman varsa, eksikleri None ile tamamla
-        veri += [None] * (7 - len(veri))
+        # Eğer satırda 6'dan az eleman varsa, eksikleri None ile tamamla
+        veri += [None] * (6 - len(veri))
 
-        t, gun, corba, ana, yard, tatli, ekstra = veri
+        t, gun, corba, ana, yard, tatli = veri
 
         d = parse_tr_date(t)
         if d == target_date:
             label = "Yarın" if SEND_TOMORROW else "Bugün"
-
-            # Excel'de ekstra sütunu boş bırakıldıysa Telegram'da "None" yazmaması için "-" koyuyoruz
-            ekstra_yazi = ekstra if ekstra else "-"
 
             return (
                 f"📌 {label} ({t} - {gun}) Menü:\n"
                 f"🍲 Çorba: {corba}\n"
                 f"🍽️ Yemek: {ana}\n"
                 f"🥗 Yardımcı: {yard}\n"
-                f"🍮 Tatlı/Meyve: {tatli}\n"
-                f"✅ Ekstra: {ekstra_yazi}"
+                f"🍮 Tatlı/Meyve: {tatli}"
             )
 
     return f"❗ Menü bulunamadı: {target_date.strftime('%d.%m.%Y')}"
